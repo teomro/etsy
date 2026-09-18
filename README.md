@@ -14,6 +14,22 @@ no credentials ship with this package.
 | `scan_niche` | Scans active Etsy listings for a keyword, returns demand estimates, model/variant clusters ranked by sales velocity, tag evidence and incumbent weaknesses. |
 | `analyze_shop` | Audits a shop by name, id or URL: inventory, per-listing demand, pricing spread, strongest tags, listing-quality gaps. |
 | `create_draft` | Creates a digital download **draft** in your own shop, with titles and tags sanitised to Etsy's limits. |
+| `health_check` | Reports whether a key is configured and whether Etsy answers. Run this first if anything fails. |
+
+## Deploy on MCP Market
+
+1. MCP Servers → **+ Add custom** → **GitHub**
+   - Repository: `https://github.com/teomro/etsy`
+   - Server name: `etsy`
+2. After the deploy succeeds, open the server's **Variables** tab and set
+   `ETSY_API_KEY` (required) and `ETSY_SHARED_SECRET`. Add `ETSY_OAUTH_TOKEN`
+   and `ETSY_SHOP_ID` only if you want draft creation.
+3. Restart / redeploy the server, then reconnect it in your agent.
+4. Ask the agent to run `health_check` — it confirms keys and Etsy connectivity.
+
+The deploy manifest is `mcp.json`: install `npm install --include=dev`, build
+`npm run build`, start `node dist/index.js` over stdio. A `Dockerfile` with the
+same steps is included for Docker-based deploys.
 
 ## Requirements
 
@@ -22,35 +38,14 @@ no credentials ship with this package.
 
 ## Install
 
-From this repository:
-
 ```bash
-git clone https://github.com/teomro/etsy.git etsy-mcp-server
-cd etsy-mcp-server
 npm install
 npm run build
 ```
 
-Then point your agent at the local build:
+## Configure your agent
 
-```json
-{
-  "mcpServers": {
-    "etsy": {
-      "command": "node",
-      "args": ["/absolute/path/to/etsy-mcp-server/dist/index.js"],
-      "env": {
-        "ETSY_API_KEY": "your_keystring",
-        "ETSY_SHARED_SECRET": "your_shared_secret",
-        "ETSY_OAUTH_TOKEN": "optional_oauth_access_token",
-        "ETSY_SHOP_ID": "optional_numeric_shop_id"
-      }
-    }
-  }
-}
-```
-
-Or via npm (published package):
+Claude Desktop / Claude Code (`claude_desktop_config.json`):
 
 ```json
 {
@@ -69,15 +64,8 @@ Or via npm (published package):
 }
 ```
 
-Docker:
-
-```bash
-docker build -t etsy-mcp-server .
-docker run -i --rm -e ETSY_API_KEY=... -e ETSY_SHARED_SECRET=... etsy-mcp-server
-```
-
 Tools then appear to the agent as `mcp__etsy__scan_niche`,
-`mcp__etsy__analyze_shop` and `mcp__etsy__create_draft`.
+`mcp__etsy__analyze_shop`, `mcp__etsy__create_draft` and `mcp__etsy__health_check`.
 
 ## Environment variables
 

@@ -1,0 +1,55 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schemas/server.json",
+  "name": "etsy",
+  "displayName": "Etsy Model & Niche Hunter",
+  "description": "Niche scanning, competitor shop audits and rank-safe digital draft creation on Etsy, using your own Etsy API keys.",
+  "version": "1.0.0",
+  "license": "MIT",
+  "homepage": "https://github.com/teomro/etsy",
+  "transport": "stdio",
+  "runtime": "node",
+  "install": "npm install --include=dev",
+  "build": "npm run build",
+  "start": {
+    "command": "node",
+    "args": ["dist/index.js"]
+  },
+  "tools": [
+    "scan_niche",
+    "analyze_shop",
+    "create_draft",
+    "health_check"
+  ],
+  "env": [
+    {
+      "name": "ETSY_API_KEY",
+      "description": "Your Etsy Open API v3 keystring.",
+      "required": true,
+      "secret": true
+    },
+    {
+      "name": "ETSY_SHARED_SECRET",
+      "description": "Your Etsy app shared secret.",
+      "required": false,
+      "secret": true
+    },
+    {
+      "name": "ETSY_OAUTH_TOKEN",
+      "description": "OAuth2 access token. Only needed to create drafts in your shop.",
+      "required": false,
+      "secret": true
+    },
+    {
+      "name": "ETSY_SHOP_ID",
+      "description": "Default shop id used when creating drafts.",
+      "required": false,
+      "secret": false
+    },
+    {
+      "name": "ETSY_FAVORITES_TO_SALES",
+      "description": "Override the favourites-to-sales calibration factor (default 22.08).",
+      "required": false,
+      "secret": false
+    }
+  ]
+}

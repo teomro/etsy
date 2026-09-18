@@ -314,6 +314,50 @@ server.tool(
   }
 );
 
+/* ------------------------------------------------------------------ */
+/* health_check                                                        */
+/* ------------------------------------------------------------------ */
+
+server.tool(
+  "health_check",
+  "Check that the server is running, that an Etsy API key is configured, and that Etsy answers. Use this first when any other tool fails.",
+  { ...credentialArgs },
+  async (args) => {
+    const hasKey = Boolean(
+      args.api_key || process.env.ETSY_API_KEY || process.env.ETSY_KEYSTRING
+    );
+    const report: Record<string, unknown> = {
+      server: "etsy",
+      version: "1.0.0",
+      api_key_configured: hasKey,
+      oauth_token_configured: Boolean(process.env.ETSY_OAUTH_TOKEN),
+      shop_id_configured: Boolean(process.env.ETSY_SHOP_ID),
+    };
+
+    if (!hasKey) {
+      report.etsy_reachable = false;
+      report.next_step =
+        "Set ETSY_API_KEY (your Etsy keystring) in this server's environment variables, then restart the server.";
+      return json(report);
+    }
+
+    try {
+      const creds = resolveCredentials(args);
+      const probe = await searchListings("planner", creds, 1);
+      report.etsy_reachable = true;
+      report.sample_results = probe.length;
+      report.next_step = "All good - the Etsy tools are ready to use.";
+    } catch (e) {
+      report.etsy_reachable = false;
+      report.error = e instanceof Error ? e.message : String(e);
+      report.next_step =
+        "Etsy rejected the request. Check that ETSY_API_KEY holds a valid Etsy Open API v3 keystring.";
+    }
+
+    return json(report);
+  }
+);
+
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
