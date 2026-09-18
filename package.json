@@ -1,0 +1,40 @@
+{
+  "name": "@etsylens/mcp-server",
+  "version": "1.0.0",
+  "description": "Etsy Model & Niche Hunter MCP server - niche scanning, competitor shop audits and rank-safe digital draft creation using your own Etsy API keys.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "etsy-mcp-server": "dist/index.js"
+  },
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "mcp",
+    "etsy",
+    "product-research",
+    "seo",
+    "ecommerce"
+  ]
+}
